@@ -1,37 +1,88 @@
-## Welcome to GitHub Pages
+<!DOCTYPE html>
+<html lang="en">
 
-You can use the [editor on GitHub](https://github.com/Front-LucasRibeiro/Galeria-de-Fotos-Flick/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <title>Galeria Flickr</title>
+  <style>
+    .container {
+      margin-top: 50px;
+    }
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+    .galeria {
+      margin-top: 50px;
+      display: flex;
+    }
 
-### Markdown
+    #flickr {
+      list-style: none;
+      display: flex;
+      width: 1024px;
+      flex-wrap: wrap;
+      padding: 0;
+      justify-content: space-between;
+    }
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+    #flickr li {
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
 
-```markdown
-Syntax highlighted code block
+<body>
+  <div class="container">
+    <h2>Galeria de Fotos Flickr</h2>
+    <div class="galeria">
+      <ul id="flickr">
+        <!-- images  -->
+      </ul>
+    </div>
+  </div>
 
-# Header 1
-## Header 2
-### Header 3
+  <script>
+    $(function () {
+      var urlGaleria = "https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?"
 
-- Bulleted
-- List
+      $.getJSON(urlGaleria, {
+        tags: "paisagens",
+        tagmode: "any",
+        format: "json"
+      }).done(function (data) {
+        $.each(data.items, function (index, item) {
 
-1. Numbered
-2. List
+          var item = `<li>
+                        <a href="${item.link}" target="_blank">
+                          <div class="card" style="width: 18rem;">
+                            <img class="card-img-top" alt="${item.title}" title="${item.title}" src="${item.media.m}" />
+                            <div class="card-body">
+                              <h5 class="card-title">${item.title}</h5>
+                              <p class="card-text">
+                                <strong>AutorID:</strong> ${item.author_id} <br/>
+                                <strong>Autor:</strong> ${item.author}
+                              </p>
+                              <p class="card-text">
+                                <strong>Tags:</strong> ${item.tags}
+                              </p>
+                            </div>
+                          </div>
+                        </a>
+                      <li>`;
 
-**Bold** and _Italic_ and `Code` text
+          $(item).appendTo("#flickr");
 
-[Link](url) and ![Image](src)
-```
+          if (index == 5) {
+            return false;
+          }
+        })
+      }).fail(function () {
+        console.log("Erro ao obter fotos");
+      });
+    });
+  </script>
+</body>
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Front-LucasRibeiro/Galeria-de-Fotos-Flick/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+</html>
